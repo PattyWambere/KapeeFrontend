@@ -2,20 +2,9 @@ import { FaRegHeart, FaHeart, FaStar, FaRegStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useWishlist } from "../../context/WishlistContext";
 
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-  description?: string;
-  categoryId: string;
-  inStock: boolean;
-  quantity: number;
-  images: string[];
-  rating?: number;
-  numReviews?: number;
-}
+// Product interface is now handled by 'any' or external types to support dynamic data
 
-const ProductCard = ({ product, categoryName }: { product: Product; categoryName: string }) => {
+const ProductCard = ({ product, categoryName = "" }: { product: any; categoryName?: string }) => {
   const { toggleWishlist, isInWishlist } = useWishlist();
   const liked = isInWishlist(product.id);
 
