@@ -488,11 +488,10 @@ const ProductDetails = () => {
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tabKey)}
-                    className={`pb-4 text-[10px] font-black uppercase tracking-[0.2em] transition-all relative ${
-                      activeTab === tabKey
+                    className={`pb-4 text-[10px] font-black uppercase tracking-[0.2em] transition-all relative ${activeTab === tabKey
                         ? "text-gray-900 after:absolute after:bottom-0 after:left-0 after:w-full after:h-[3px] after:bg-orange-500"
                         : "text-gray-400 hover:text-gray-900"
-                    }`}
+                      }`}
                   >
                     {tab}
                   </button>
@@ -576,10 +575,10 @@ const ProductDetails = () => {
                         setProduct((prev) =>
                           prev
                             ? {
-                                ...prev,
-                                rating: response.data.newRating,
-                                numReviews: response.data.numReviews,
-                              }
+                              ...prev,
+                              rating: response.data.newRating,
+                              numReviews: response.data.numReviews,
+                            }
                             : null,
                         );
                       } catch (err) {
@@ -633,7 +632,7 @@ const ProductDetails = () => {
           {relatedProducts.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
               {relatedProducts.map((related) => (
-                <ProductCard key={related.id} product={related} />
+                <ProductCard key={related.id} product={related as any} categoryName="" />
               ))}
             </div>
           ) : (
