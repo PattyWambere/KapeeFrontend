@@ -113,7 +113,7 @@ const Blog = () => {
                 placeholder="Search..."
                 className="w-full px-4 py-3 pr-12 border border-gray-200 focus:border-blue-500 focus:outline-none text-sm"
               />
-              <button className="absolute right-0 top-0 h-full px-4 bg-blue-600 text-white hover:bg-blue-700 transition">
+              <button className="absolute right-0 top-0 h-full px-4 bg-blue-600 text-white hover:bg-blue-700 transition whitespace-normal break-words">
                 <FaSearch size={14} />
               </button>
             </div>

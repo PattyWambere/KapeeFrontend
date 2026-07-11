@@ -33,7 +33,12 @@ const ProductGrid = ({ filters }: { filters: Filters }) => {
       try {
         setLoading(true);
         const [prodRes, catRes] = await Promise.all([
-          client.get("/products/products"),
+          client.get("/products/products", {
+            params: {
+              search: filters.search || undefined,
+              category: filters.category || undefined,
+            }
+          }),
           client.get("/categories/categories")
         ]);
 
@@ -56,7 +61,7 @@ const ProductGrid = ({ filters }: { filters: Filters }) => {
     };
 
     fetchData();
-  }, []);
+  }, [filters.search, filters.category]);
 
   // Apply filters
   let filteredProducts = products.filter((product) => {
@@ -73,7 +78,7 @@ const ProductGrid = ({ filters }: { filters: Filters }) => {
 
     // Category filter
     if (filters.category) {
-      if (product.categoryId !== filters.category) return false;
+      if (product.categoryId.toLowerCase() !== filters.category.toLowerCase()) return false;
     }
 
     if (filters.price && product.price > filters.price) return false;
@@ -231,7 +236,7 @@ const ProductGrid = ({ filters }: { filters: Filters }) => {
                 Products Coming Soon!
               </h3>
               <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mt-2">
-                {filters.category} products will be available soon
+                {(filters.category && categories[filters.category.toLowerCase()]) || filters.category} products will be available soon
               </p>
             </>
           ) : (

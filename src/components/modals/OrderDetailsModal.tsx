@@ -8,6 +8,7 @@ import {
   FaExclamationTriangle,
 } from "react-icons/fa";
 import orderService, { type Order } from "../../api/order.service";
+import { useCurrency } from "../../context/CurrencyContext";
 
 interface OrderDetailsModalProps {
   orderId: string;
@@ -23,6 +24,7 @@ const OrderDetailsModal = ({
   const [order, setOrder] = useState<Order | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isCancelling, setIsCancelling] = useState(false);
+  const { convertPrice } = useCurrency();
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
@@ -129,7 +131,7 @@ const OrderDetailsModal = ({
           </div>
           <button
             onClick={onClose}
-            className="w-10 h-10 rounded-full bg-white border border-gray-100 flex items-center justify-center text-gray-400 hover:bg-black hover:text-white transition-all duration-300 shadow-sm"
+            className="w-10 h-10 rounded-none bg-white border border-gray-100 flex items-center justify-center text-gray-400 hover:bg-black hover:text-white transition-all duration-300 shadow-sm"
           >
             <FaTimes />
           </button>
@@ -196,7 +198,7 @@ const OrderDetailsModal = ({
                           </span>
                         </div>
                         <div className="text-sm font-black text-blue-600 tracking-tighter">
-                          ${item.price.toFixed(2)}
+                          {convertPrice(item.price)}
                         </div>
                       </div>
                     </div>
@@ -209,12 +211,41 @@ const OrderDetailsModal = ({
 
         {/* Footer */}
         <div className="p-8 border-t border-gray-100 bg-gray-50/50">
+          {/* Payment Info Row */}
+          {order.paymentMethod && (
+            <div className="mb-6 flex items-center justify-between pb-6 border-b border-gray-100">
+              <div className="flex items-center gap-3">
+                <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-white text-xs flex-shrink-0 ${order.paymentMethod === "card" ? "bg-blue-600" : "bg-amber-500"}`}>
+                  {order.paymentMethod === "card" ? "💳" : "💵"}
+                </div>
+                <div>
+                  <div className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-400 mb-0.5">Payment</div>
+                  <div className="text-sm font-bold text-gray-900">
+                    {order.paymentMethod === "card"
+                      ? `${order.paymentDetails?.cardType ? order.paymentDetails.cardType.charAt(0).toUpperCase() + order.paymentDetails.cardType.slice(1) : "Card"}${order.paymentDetails?.last4 ? ` •••• ${order.paymentDetails.last4}` : ""}`
+                      : "Cash on Delivery"}
+                  </div>
+                </div>
+              </div>
+              <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border ${
+                order.paymentStatus === "paid"
+                  ? "bg-green-100 text-green-700 border-green-200"
+                  : order.paymentStatus === "failed"
+                  ? "bg-red-100 text-red-700 border-red-200"
+                  : "bg-amber-100 text-amber-700 border-amber-200"
+              }`}>
+                <span className={`w-1.5 h-1.5 rounded-full ${order.paymentStatus === "paid" ? "bg-green-500" : order.paymentStatus === "failed" ? "bg-red-500" : "bg-amber-500"}`} />
+                {order.paymentStatus === "paid" ? "Paid" : order.paymentStatus === "failed" ? "Failed" : "Pending"}
+              </span>
+            </div>
+          )}
+
           <div className="flex justify-between items-center mb-8">
             <span className="text-xs font-black text-gray-400 uppercase tracking-[0.2em]">
               Total Amount Paid
             </span>
             <span className="text-2xl font-black text-blue-600 tracking-tighter">
-              ${order.totalAmount.toFixed(2)}
+              {convertPrice(order.totalAmount)}
             </span>
           </div>
 
@@ -223,7 +254,7 @@ const OrderDetailsModal = ({
               <button
                 onClick={handleCancelOrder}
                 disabled={isCancelling}
-                className="flex-1 bg-red-500  text-white font-black py-4 rounded-xl hover:bg-red-400 hover:text-white transition-all duration-500 uppercase text-[10px] tracking-[0.2em] flex items-center justify-center gap-2 shadow-sm disabled:opacity-50"
+                className="flex-1 bg-red-500 text-white font-black py-3 md:py-4 rounded-none hover:bg-red-400 hover:text-white transition-all duration-500 uppercase text-[10px] tracking-[0.2em] flex items-center justify-center gap-2 shadow-sm disabled:opacity-50 whitespace-normal break-words"
               >
                 {isCancelling ? (
                   <>

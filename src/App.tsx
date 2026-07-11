@@ -5,6 +5,8 @@ import { WishlistProvider } from "./context/WishlistContext";
 import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
 
+import { CurrencyProvider } from "./context/CurrencyContext";
+
 // Pages
 import Home from "./pages/Home";
 import About from "./pages/About";
@@ -27,15 +29,18 @@ import AdminDashboard from "./pages/admin/Dashboard";
 import ManageProducts from "./pages/admin/ManageProducts";
 import ManageCategories from "./pages/admin/ManageCategories";
 import ManageOrders from "./pages/admin/ManageOrders";
+import ManageSettings from "./pages/admin/ManageSettings";
+import AdminProfile from "./pages/admin/AdminProfile";
 
 function App() {
   return (
     <AuthProvider>
-      <WishlistProvider>
-        <CartProvider>
-          <Router>
-            <Routes>
-              <Route element={<MainLayout />}>
+      <CurrencyProvider>
+        <WishlistProvider>
+          <CartProvider>
+            <Router>
+              <Routes>
+                <Route element={<MainLayout />}>
                 <Route path="/" element={<Home />} /> {/* Home page */}
                 <Route path="/about" element={<About />} /> {/* About page */}
                 <Route path="/blog" element={<Blog />} /> {/* Blog page */}
@@ -70,6 +75,8 @@ function App() {
                 <Route path="products" element={<ManageProducts />} />
                 <Route path="categories" element={<ManageCategories />} />
                 <Route path="orders" element={<ManageOrders />} />
+                <Route path="settings" element={<ManageSettings />} />
+                <Route path="profile" element={<AdminProfile />} />
               </Route>
 
               {/* 404 fallback */}
@@ -79,8 +86,9 @@ function App() {
               />
             </Routes>
           </Router>
-        </CartProvider>
-      </WishlistProvider>
+          </CartProvider>
+        </WishlistProvider>
+      </CurrencyProvider>
     </AuthProvider >
   );
 }

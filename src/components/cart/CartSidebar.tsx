@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
+import { useCurrency } from "../../context/CurrencyContext";
 
 const CartSidebar = () => {
     const {
@@ -10,6 +11,7 @@ const CartSidebar = () => {
         subtotal,
         updateQuantity,
     } = useCart();
+    const { convertPrice } = useCurrency();
 
     const freeShippingThreshold = 151.0;
     const progress = Math.min((subtotal / freeShippingThreshold) * 100, 100);
@@ -99,7 +101,7 @@ const CartSidebar = () => {
                                                 </button>
                                             </div>
                                             <span className="text-sm text-gray-500">x</span>
-                                            <span className="text-sm font-semibold">${item.price.toFixed(2)}</span>
+                                            <span className="text-sm font-semibold">{convertPrice(item.price)}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -112,7 +114,7 @@ const CartSidebar = () => {
                 <div className="absolute bottom-0 left-0 w-full bg-white border-t p-4 pb-6 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
                     <div className="flex justify-between items-center mb-2">
                         <span className="text-sm font-bold text-gray-600 uppercase">Subtotal:</span>
-                        <span className="text-lg font-bold text-gray-900">${subtotal.toFixed(2)}</span>
+                        <span className="text-lg font-bold text-gray-900">{convertPrice(subtotal)}</span>
                     </div>
 
                     {/* Free Shipping Progress */}
@@ -125,7 +127,7 @@ const CartSidebar = () => {
                         </div>
                         {subtotal < freeShippingThreshold ? (
                             <p className="text-xs text-gray-500">
-                                Spend <span className="font-bold text-gray-800">${(freeShippingThreshold - subtotal).toFixed(2)}</span> to get free shipping
+                                Spend <span className="font-bold text-gray-800">{convertPrice(freeShippingThreshold - subtotal)}</span> to get free shipping
                             </p>
                         ) : (
                             <p className="text-xs text-green-600 font-bold">You've got free shipping!</p>

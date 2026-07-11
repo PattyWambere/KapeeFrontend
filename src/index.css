@@ -33,3 +33,15 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* Global Button Styling for 0 Roundness */
+@layer base {
+  button, 
+  [type='button'], 
+  [type='reset'], 
+  [type='submit'],
+  .btn,
+  a.btn {
+    border-radius: 0 !important;
+  }
+}

@@ -21,7 +21,7 @@ const Footer = () => {
         {/* BRAND / INFO */}
         <div className="lg:col-span-4 space-y-8">
           <Link to="/" className="inline-block">
-            <h2 className="text-3xl font-black text-white uppercase tracking-tighter">Kapee<span className="text-orange-500">.</span></h2>
+            <h2 className="text-3xl font-black text-white uppercase tracking-tighter">GuraFaster<span className="text-orange-500">.</span></h2>
           </Link>
 
           <p className="text-sm font-medium leading-relaxed max-w-sm">
@@ -123,7 +123,7 @@ const Footer = () => {
             />
             <button
               type="submit"
-              className="absolute right-2 top-2 bottom-2 bg-orange-500 text-white px-6 rounded-xl hover:bg-white hover:text-orange-500 transition-all duration-300"
+              className="absolute right-2 top-2 bottom-2 bg-orange-500 text-white px-4 md:px-6 rounded-none hover:bg-white hover:text-orange-500 transition-all duration-300 whitespace-normal break-words"
             >
               <FaPaperPlane size={14} />
             </button>
@@ -154,7 +154,7 @@ const Footer = () => {
         <div className="max-w-7xl mx-auto px-6 py-10 flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
             <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-600">
-              &copy; 2024 KAPEE. ALL RIGHTS RESERVED.
+              &copy; {new Date().getFullYear()} GURAFASTER. ALL RIGHTS RESERVED.
             </p>
             <div className="flex gap-6">
               <Link to="#" className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-600 hover:text-white transition-colors">Privacy</Link>

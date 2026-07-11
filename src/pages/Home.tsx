@@ -9,6 +9,7 @@ import {
 } from "react-icons/fa";
 import client from "../api/client";
 import categoryService, { type Category } from "../api/category.service";
+import { useCurrency } from "../context/CurrencyContext";
 
 import menImg from "/images/men.jpg";
 import womenImg from "/images/women.jpg";
@@ -75,6 +76,7 @@ const Home = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const { convertPrice } = useCurrency();
 
   // Fetch products and categories from API
   useEffect(() => {
@@ -153,7 +155,7 @@ const Home = () => {
                 <p className="text-gray-500 mb-10 text-sm md:text-xl font-medium max-w-lg ${slide.align === 'right' ? 'md:ml-auto' : ''}">
                   {slide.description}
                 </p>
-                <button className="bg-blue-600 text-white hover:bg-black px-12 py-5 uppercase text-xs font-black tracking-[0.2em] transition-all duration-300 shadow-[0_20px_40px_-10px_rgba(37,99,235,0.4)] hover:shadow-2xl active:scale-95 rounded-xl">
+                <button className="bg-blue-600 text-white hover:bg-black px-4 md:px-12 py-3 md:py-5 uppercase text-xs font-black tracking-[0.2em] transition-all duration-300 shadow-[0_20px_40px_-10px_rgba(37,99,235,0.4)] hover:shadow-2xl active:scale-95 rounded-none whitespace-normal break-words">
                   {slide.cta}
                 </button>
               </div>
@@ -164,7 +166,7 @@ const Home = () => {
         {/* Navigation Arrows */}
         <div className="absolute inset-x-4 md:inset-x-10 top-1/2 -translate-y-1/2 flex justify-between z-20 pointer-events-none">
           <button
-            className="w-10 h-10 md:w-14 md:h-14 bg-white/90 backdrop-blur shadow-xl rounded-full flex items-center justify-center text-gray-800 hover:bg-blue-600 hover:text-white transition-all duration-300 opacity-0 group-hover:opacity-100 pointer-events-auto active:scale-90"
+            className="w-10 h-10 md:w-14 md:h-14 bg-white/90 backdrop-blur shadow-xl rounded-none flex items-center justify-center text-gray-800 hover:bg-blue-600 hover:text-white transition-all duration-300 opacity-0 group-hover:opacity-100 pointer-events-auto active:scale-90"
             onClick={() =>
               setCurrentSlide((prev) =>
                 prev === 0 ? carouselSlides.length - 1 : prev - 1,
@@ -174,7 +176,7 @@ const Home = () => {
             <i className="fa-solid fa-angle-left"></i>
           </button>
           <button
-            className="w-10 h-10 md:w-14 md:h-14 bg-white/90 backdrop-blur shadow-xl rounded-full flex items-center justify-center text-gray-800 hover:bg-blue-600 hover:text-white transition-all duration-300 opacity-0 group-hover:opacity-100 pointer-events-auto active:scale-90"
+            className="w-10 h-10 md:w-14 md:h-14 bg-white/90 backdrop-blur shadow-xl rounded-none flex items-center justify-center text-gray-800 hover:bg-blue-600 hover:text-white transition-all duration-300 opacity-0 group-hover:opacity-100 pointer-events-auto active:scale-90"
             onClick={() =>
               setCurrentSlide((prev) =>
                 prev === carouselSlides.length - 1 ? 0 : prev + 1,
@@ -302,7 +304,7 @@ const Home = () => {
             {
               icon: <FaShippingFast />,
               title: "Free Shipping",
-              desc: "On all orders over $99",
+              desc: `On all orders over ${convertPrice(99)}`,
             },
             {
               icon: <FaUndo />,

@@ -44,7 +44,7 @@ const UserModal = ({ isOpen, onClose }: ModalProps) => {
             {/* CLOSE BUTTON */}
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 text-gray-600 hover:text-gray-800"
+              className="absolute top-4 right-4 text-gray-600 hover:text-gray-800 whitespace-normal break-words"
             >
               <FaTimes size={20} />
             </button>
@@ -63,7 +63,7 @@ const UserModal = ({ isOpen, onClose }: ModalProps) => {
               />
               <button
                 type="submit"
-                className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+                className="w-full bg-blue-600 text-white py-2 rounded-none hover:bg-blue-700 transition whitespace-normal break-words"
               >
                 Sign In
               </button>

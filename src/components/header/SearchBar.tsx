@@ -1,25 +1,42 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { categories } from "../../data/Products";
+import categoryService, { type Category } from "../../api/category.service";
 
 const SearchBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
+  const [categories, setCategories] = useState<Category[]>([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const data = await categoryService.getCategories();
+        setCategories(data);
+      } catch (error) {
+        console.error("Failed to fetch categories for searchbar:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
 
+    const params = new URLSearchParams();
     if (searchQuery.trim()) {
-      // Navigate to shop page with search query
-      const params = new URLSearchParams();
       params.set("search", searchQuery.trim());
+    }
 
-      if (selectedCategory !== "All Categories") {
-        params.set("category", selectedCategory);
-      }
+    if (selectedCategory !== "All Categories") {
+      params.set("category", selectedCategory);
+    }
 
+    // Only navigate if we actually have parameters to search for
+    if (searchQuery.trim() || selectedCategory !== "All Categories") {
       navigate(`/shop?${params.toString()}`);
+    } else {
+      navigate("/shop");
     }
   };
 
@@ -38,15 +55,15 @@ const SearchBar = () => {
         onChange={(e) => setSelectedCategory(e.target.value)}
         className="px-3 border-l"
       >
-        <option>All Categories</option>
+        <option value="All Categories">All Categories</option>
         {categories.map((cat) => (
-          <option key={cat.name} value={cat.name}>
+          <option key={cat.id} value={cat.id}>
             {cat.name}
           </option>
         ))}
       </select>
 
-      <button type="submit" className="px-5 bg-blue-500 text-white hover:bg-blue-600 transition">
+      <button type="submit" className="px-4 md:px-5 bg-blue-500 text-white hover:bg-blue-600 transition whitespace-normal break-words">
         <i className="fa-solid fa-magnifying-glass"></i>
       </button>
     </form>

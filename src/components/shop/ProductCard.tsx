@@ -1,11 +1,13 @@
 import { FaRegHeart, FaHeart, FaStar, FaRegStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useWishlist } from "../../context/WishlistContext";
+import { useCurrency } from "../../context/CurrencyContext";
 
 // Product interface is now handled by 'any' or external types to support dynamic data
 
 const ProductCard = ({ product, categoryName = "" }: { product: any; categoryName?: string }) => {
   const { toggleWishlist, isInWishlist } = useWishlist();
+  const { convertPrice } = useCurrency();
   const liked = isInWishlist(product.id);
 
   return (
@@ -77,7 +79,7 @@ const ProductCard = ({ product, categoryName = "" }: { product: any; categoryNam
         </div>
 
         {/* Price */}
-        <div className="text-sm font-bold">${product.price.toFixed(2)}</div>
+        <div className="text-sm font-bold">{convertPrice(product.price)}</div>
       </div>
     </div>
   );

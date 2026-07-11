@@ -76,7 +76,7 @@ const Contact = () => {
                                 </div>
                                 <div>
                                     <h4 className="text-xs font-black uppercase tracking-widest text-gray-900 mb-2">Email Us</h4>
-                                    <p className="text-sm text-gray-600">support@kapee.com<br />sales@kapee.com</p>
+                                    <p className="text-sm text-gray-600">support@gurafaster.com<br />sales@gurafaster.com</p>
                                 </div>
                             </div>
 
@@ -180,7 +180,7 @@ const Contact = () => {
                                 <button
                                     type="submit"
                                     disabled={isSubmitted}
-                                    className="bg-blue-600 text-white px-8 py-4 font-bold uppercase tracking-wider hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed rounded-lg shadow-lg hover:shadow-xl inline-flex items-center gap-3"
+                                    className="bg-blue-600 text-white px-4 md:px-8 py-3 md:py-4 font-bold uppercase tracking-wider hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed rounded-none shadow-lg hover:shadow-xl inline-flex items-center gap-3 whitespace-normal break-words"
                                 >
                                     <FaPaperPlane />
                                     {isSubmitted ? "Message Sent!" : "Send Message"}

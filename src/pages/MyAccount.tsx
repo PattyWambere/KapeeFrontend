@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { Navigate } from "react-router-dom";
+import PaymentMethodsTab from "../components/account/PaymentMethodsTab";
 
 const MyAccount = () => {
     const { user, logout, isAuthenticated, isLoading, changePassword, uploadAvatar } = useAuth();
@@ -82,22 +83,28 @@ const MyAccount = () => {
                         </div>
                     </div>
 
-                    <nav className="space-y-2">
+                    <nav className="flex md:flex-col gap-2 overflow-x-auto pb-2 md:pb-0">
                         <button
                             onClick={() => setActiveTab("dashboard")}
-                            className={`w-full text-left px-4 py-2 rounded font-medium transition ${activeTab === "dashboard" ? "bg-blue-50 text-blue-600" : "hover:bg-gray-50 text-gray-600"}`}
+                            className={`whitespace-nowrap px-4 py-2 rounded font-medium transition shrink-0 ${activeTab === "dashboard" ? "bg-blue-50 text-blue-600" : "hover:bg-gray-50 text-gray-600"}`}
                         >
                             Dashboard
                         </button>
                         <button
                             onClick={() => setActiveTab("password")}
-                            className={`w-full text-left px-4 py-2 rounded font-medium transition ${activeTab === "password" ? "bg-blue-50 text-blue-600" : "hover:bg-gray-50 text-gray-600"}`}
+                            className={`whitespace-nowrap px-4 py-2 rounded font-medium transition shrink-0 ${activeTab === "password" ? "bg-blue-50 text-blue-600" : "hover:bg-gray-50 text-gray-600"}`}
                         >
                             Change Password
                         </button>
                         <button
+                            onClick={() => setActiveTab("payments")}
+                            className={`whitespace-nowrap px-4 py-2 rounded font-medium transition shrink-0 ${activeTab === "payments" ? "bg-blue-50 text-blue-600" : "hover:bg-gray-50 text-gray-600"}`}
+                        >
+                            Payment Methods
+                        </button>
+                        <button
                             onClick={logout}
-                            className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 rounded mt-4"
+                            className="whitespace-nowrap px-4 py-2 text-red-600 hover:bg-red-50 rounded-none shrink-0 md:mt-4 whitespace-normal break-words"
                         >
                             Logout
                         </button>
@@ -165,12 +172,16 @@ const MyAccount = () => {
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className="bg-blue-600 text-white px-6 py-2 rounded font-medium hover:bg-blue-700 transition disabled:opacity-50"
+                                    className="bg-blue-600 text-white px-4 md:px-6 py-2 rounded-none font-medium hover:bg-blue-700 transition disabled:opacity-50 whitespace-normal break-words"
                                 >
                                     {isSubmitting ? "Updating..." : "Update Password"}
                                 </button>
                             </form>
                         </div>
+                    )}
+                    
+                    {activeTab === "payments" && (
+                        <PaymentMethodsTab />
                     )}
                 </div>
             </div>

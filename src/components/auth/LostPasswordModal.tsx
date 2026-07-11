@@ -38,7 +38,7 @@ const LostPasswordModal = ({ isOpen, onClose, onSwitchToLogin }: LostPasswordMod
                 {/* Close Button */}
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 z-10 text-gray-400 hover:text-gray-600 transition"
+                    className="absolute top-4 right-4 z-10 text-gray-400 hover:text-gray-600 transition whitespace-normal break-words"
                 >
                     <FaTimes size={20} />
                 </button>
@@ -79,7 +79,7 @@ const LostPasswordModal = ({ isOpen, onClose, onSwitchToLogin }: LostPasswordMod
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="w-full bg-blue-600 text-white py-3 font-bold uppercase tracking-wider hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full bg-blue-600 text-white py-3 font-bold uppercase tracking-wider hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed whitespace-normal break-words"
                         >
                             {isSubmitting ? "Sending..." : "Reset Password"}
                         </button>
@@ -89,7 +89,7 @@ const LostPasswordModal = ({ isOpen, onClose, onSwitchToLogin }: LostPasswordMod
                             <button
                                 type="button"
                                 onClick={onSwitchToLogin}
-                                className="text-blue-600 font-bold hover:underline"
+                                className="text-blue-600 font-bold hover:underline whitespace-normal break-words"
                             >
                                 Back to Login
                             </button>

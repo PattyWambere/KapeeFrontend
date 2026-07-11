@@ -1,14 +1,33 @@
 import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { FaTrash, FaMinus, FaPlus } from "react-icons/fa";
 import { useCart } from "../context/CartContext";
+import { useCurrency } from "../context/CurrencyContext";
 import CheckoutSteps from "../components/checkout/CheckoutSteps";
+import settingsService from "../api/settings.service";
 
 const Cart = () => {
   const { cartItems, removeFromCart, updateQuantity, subtotal } = useCart();
+  const { convertPrice } = useCurrency();
   const navigate = useNavigate();
+  const [freeShippingThreshold, setFreeShippingThreshold] = useState(120);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const data = await settingsService.getSettings();
+        if (data && data.freeShippingThreshold !== undefined) {
+          setFreeShippingThreshold(data.freeShippingThreshold);
+        }
+      } catch (error) {
+        console.error("Failed to fetch settings:", error);
+      }
+    };
+    fetchSettings();
+  }, []);
+
   const shippingCost = 5.0;
   const total = subtotal + shippingCost;
-  const freeShippingThreshold = 120;
   const progress = Math.min((subtotal / freeShippingThreshold) * 100, 100);
 
   if (cartItems.length === 0) {
@@ -50,7 +69,67 @@ const Cart = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Main Cart Table */}
           <div className="lg:col-span-8">
-            <div className="overflow-x-auto">
+            {/* Mobile Cart List - Hidden on Desktop */}
+            <div className="md:hidden space-y-6">
+              {cartItems.map((item) => (
+                <div key={item.id} className="flex gap-4 border-b border-gray-100 pb-6 relative">
+                  <button
+                    onClick={() => removeFromCart(item.id)}
+                    className="absolute top-0 right-0 text-gray-400 hover:text-red-500 transition-colors p-1"
+                  >
+                    <FaTrash size={12} />
+                  </button>
+                  <img
+                    src={
+                      item.image ||
+                      (item.images && item.images[0]) ||
+                      "/images/placeholder.png"
+                    }
+                    alt={item.name || item.title}
+                    className="w-20 h-24 object-cover rounded-xl shadow-sm"
+                  />
+                  <div className="flex-1 min-w-0 flex flex-col justify-between">
+                    <div>
+                      <Link
+                        to={`/shop/${item.productId || item.id}`}
+                        className="font-bold text-gray-800 hover:text-blue-600 transition-colors text-sm line-clamp-1 pr-6"
+                      >
+                        {item.name || item.title}
+                      </Link>
+                      <p className="text-blue-600 font-bold text-sm mt-1">{convertPrice(item.price)}</p>
+                    </div>
+
+                    <div className="flex items-center justify-between mt-4">
+                      {/* Quantity Selector */}
+                      <div className="inline-flex items-center border border-gray-200 bg-white rounded-lg overflow-hidden">
+                        <button
+                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                          className="w-8 h-8 flex items-center justify-center text-gray-400 hover:bg-gray-50 border-r border-gray-200"
+                          disabled={item.quantity <= 1}
+                        >
+                          <FaMinus size={8} />
+                        </button>
+                        <span className="w-8 text-center text-xs font-bold">
+                          {item.quantity}
+                        </span>
+                        <button
+                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          className="w-8 h-8 flex items-center justify-center text-gray-400 hover:bg-gray-50 border-l border-gray-200"
+                        >
+                          <FaPlus size={8} />
+                        </button>
+                      </div>
+                      <p className="font-bold text-blue-600 text-sm">
+                        {convertPrice(item.price * item.quantity)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop Cart Table - Hidden on Mobile */}
+            <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="border-b border-gray-200 text-sm font-bold text-gray-800 uppercase">
@@ -81,7 +160,7 @@ const Cart = () => {
                               "/images/placeholder.png"
                             }
                             alt={item.name || item.title}
-                            className="w-20 h-24 object-cover"
+                            className="w-20 h-24 object-cover rounded-xl"
                           />
                           <Link
                             to={`/shop/${item.productId || item.id}`}
@@ -92,11 +171,11 @@ const Cart = () => {
                         </div>
                       </td>
                       <td className="py-8 text-blue-600 font-bold text-sm">
-                        ${item.price.toFixed(2)}
+                        {convertPrice(item.price)}
                       </td>
                       <td className="py-8">
                         <div className="flex justify-center">
-                          <div className="inline-flex items-center border border-gray-200 bg-white">
+                          <div className="inline-flex items-center border border-gray-200 bg-white rounded-lg overflow-hidden">
                             <button
                               onClick={() =>
                                 updateQuantity(item.id, item.quantity - 1)
@@ -121,7 +200,7 @@ const Cart = () => {
                         </div>
                       </td>
                       <td className="py-8 font-bold text-blue-600 text-sm text-right">
-                        ${(item.price * item.quantity).toFixed(2)}
+                        {convertPrice(item.price * item.quantity)}
                       </td>
                     </tr>
                   ))}
@@ -136,7 +215,7 @@ const Cart = () => {
                 placeholder="Coupon code"
                 className="border border-gray-200 border-r-0 px-6 py-3 outline-none text-sm w-full sm:w-64"
               />
-              <button className="bg-blue-600 text-white text-[10px] font-bold uppercase py-3 px-8 hover:bg-blue-700 transition-all duration-300">
+              <button className="bg-blue-600 text-white text-[10px] font-bold uppercase py-3 px-4 md:px-8 hover:bg-blue-700 transition-all duration-300 whitespace-normal break-words">
                 APPLY COUPON
               </button>
             </div>
@@ -155,7 +234,7 @@ const Cart = () => {
                     Subtotal
                   </span>
                   <span className="text-blue-600 font-bold text-sm">
-                    ${subtotal.toFixed(2)}
+                    {convertPrice(subtotal)}
                   </span>
                 </div>
                 <div className="flex justify-between py-4 border-b border-gray-100">
@@ -166,13 +245,13 @@ const Cart = () => {
                     <p className="text-sm text-gray-800">
                       Flat rate:{" "}
                       <span className="text-blue-600 font-bold">
-                        ${shippingCost.toFixed(2)}
+                        {convertPrice(shippingCost)}
                       </span>
                     </p>
                     <p className="text-xs text-gray-500 mt-2">
                       Shipping to KGL.
                     </p>
-                    <button className="text-xs text-gray-500 hover:text-blue-600 underline mt-4">
+                    <button className="text-xs text-gray-500 hover:text-blue-600 underline mt-4 whitespace-normal break-words">
                       Change address
                     </button>
                   </div>
@@ -182,7 +261,7 @@ const Cart = () => {
                     Total
                   </span>
                   <span className="text-lg font-bold text-blue-600">
-                    ${total.toFixed(2)}
+                    {convertPrice(total)}
                   </span>
                 </div>
               </div>
@@ -202,7 +281,7 @@ const Cart = () => {
                 <p className="text-xs text-gray-600 mt-4 text-center">
                   {progress >= 100
                     ? "Congratulation! You have got free shipping"
-                    : `Add $${(freeShippingThreshold - subtotal).toFixed(2)} more for free shipping`}
+                    : `Add ${convertPrice(freeShippingThreshold - subtotal)} more for free shipping`}
                 </p>
               </div>
 

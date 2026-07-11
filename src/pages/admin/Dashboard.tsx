@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import productService from "../../api/product.service";
 import categoryService from "../../api/category.service";
 import orderService, { type Order } from "../../api/order.service";
+import { useCurrency } from "../../context/CurrencyContext";
 
 const DashboardCard = ({ title, value, icon, color, delay }: any) => (
     <div className={`bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100 flex items-center justify-between group hover:shadow-xl hover:shadow-gray-200/50 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 fill-mode-both`} style={{ animationDelay: `${delay}ms` }}>
@@ -26,6 +27,7 @@ const Dashboard = () => {
     });
     const [recentOrders, setRecentOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
+    const { convertPrice } = useCurrency();
 
     useEffect(() => {
         const fetchMetrics = async () => {
@@ -74,7 +76,7 @@ const Dashboard = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 <DashboardCard
                     title="Total Revenue"
-                    value={`$${metrics.revenue.toLocaleString()}`}
+                    value={convertPrice(metrics.revenue)}
                     icon={<FaChartLine />}
                     color="bg-emerald-600 shadow-emerald-600/20"
                     delay={0}
@@ -132,7 +134,7 @@ const Dashboard = () => {
                                             </p>
                                         </div>
                                     </div>
-                                    <p className="font-black text-gray-900 tracking-tighter">${order.totalAmount.toFixed(2)}</p>
+                                    <p className="font-black text-gray-900 tracking-tighter">{convertPrice(order.totalAmount)}</p>
                                 </div>
                             ))}
                             {recentOrders.length === 0 && (

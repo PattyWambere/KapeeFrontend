@@ -19,7 +19,7 @@ const Shop = () => {
 
   const [filters, setFilters] = useState<Filters>({
     category: searchParams.get("category") || null,
-    price: 2000,
+    price: 10000,
     color: null,
     size: null,
     rating: null,

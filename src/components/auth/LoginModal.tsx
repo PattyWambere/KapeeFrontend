@@ -55,7 +55,7 @@ const LoginModal = ({ isOpen, onClose, onSwitchToRegister, onSwitchToLostPasswor
                 {/* Close Button */}
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 z-10 text-gray-400 hover:text-gray-600 transition"
+                    className="absolute top-4 right-4 z-10 text-gray-400 hover:text-gray-600 transition whitespace-normal break-words"
                 >
                     <FaTimes size={20} />
                 </button>
@@ -141,7 +141,7 @@ const LoginModal = ({ isOpen, onClose, onSwitchToRegister, onSwitchToLostPasswor
                                 <button
                                     type="button"
                                     onClick={onSwitchToLostPassword}
-                                    className="text-blue-600 hover:underline"
+                                    className="text-blue-600 hover:underline whitespace-normal break-words"
                                 >
                                     Lost your password?
                                 </button>
@@ -151,7 +151,7 @@ const LoginModal = ({ isOpen, onClose, onSwitchToRegister, onSwitchToLostPasswor
                             <button
                                 type="submit"
                                 disabled={isLoading}
-                                className="w-full bg-blue-600 text-white py-3 font-bold uppercase tracking-wider hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="w-full bg-blue-600 text-white py-3 font-bold uppercase tracking-wider hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed whitespace-normal break-words"
                             >
                                 {isLoading ? "Logging in..." : "LOG IN"}
                             </button>
@@ -162,7 +162,7 @@ const LoginModal = ({ isOpen, onClose, onSwitchToRegister, onSwitchToLostPasswor
                                 <button
                                     type="button"
                                     onClick={onSwitchToRegister}
-                                    className="text-blue-600 font-bold hover:underline"
+                                    className="text-blue-600 font-bold hover:underline whitespace-normal break-words"
                                 >
                                     Create Account
                                 </button>

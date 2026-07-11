@@ -79,7 +79,7 @@ const RegisterModal = ({
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 text-gray-400 hover:text-gray-600 transition"
+          className="absolute top-4 right-4 z-10 text-gray-400 hover:text-gray-600 transition whitespace-normal break-words"
         >
           <FaTimes size={20} />
         </button>
@@ -219,7 +219,7 @@ const RegisterModal = ({
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-blue-600 text-white py-3 font-bold uppercase tracking-wider hover:bg-blue-700 disabled:opacity-50"
+                className="w-full bg-blue-600 text-white py-3 font-bold uppercase tracking-wider hover:bg-blue-700 disabled:opacity-50 whitespace-normal break-words"
               >
                 {isLoading ? "Creating Account..." : "Register"}
               </button>
@@ -230,7 +230,7 @@ const RegisterModal = ({
                 <button
                   type="button"
                   onClick={onSwitchToLogin}
-                  className="text-blue-600 font-bold hover:underline"
+                  className="text-blue-600 font-bold hover:underline whitespace-normal break-words"
                 >
                   Login
                 </button>

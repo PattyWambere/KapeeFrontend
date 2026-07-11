@@ -8,6 +8,7 @@ import {
   FaShoppingCart,
   FaSearch,
   FaChevronDown,
+  FaTachometerAlt,
 } from "react-icons/fa";
 import SearchBar from "./SearchBar";
 import { useWishlist } from "../../context/WishlistContext";
@@ -15,6 +16,7 @@ import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
 import CartSidebar from "../cart/CartSidebar";
 import NavMenu from "./NavMenu";
+import { useCurrency } from "../../context/CurrencyContext";
 import LoginModal from "../auth/LoginModal";
 import RegisterModal from "../auth/RegisterModal";
 import LostPasswordModal from "../auth/LostPasswordModal";
@@ -30,6 +32,7 @@ const Header = () => {
   const { wishlist } = useWishlist();
   const { cartItems, subtotal, setCartOpen } = useCart();
   const { user, logout } = useAuth();
+  const { convertPrice } = useCurrency();
 
   const handleLogout = () => {
     logout();
@@ -55,12 +58,12 @@ const Header = () => {
 
   return (
     <>
-      <header className="bg-blue-600 sticky top-0 z-50 shadow-md">
+      <header className="bg-blue-600 sticky top-0 z-50 shadow-md print:hidden">
         <div className="max-w-7xl mx-auto px-4 py-4 md:py-6">
           <div className="flex items-center justify-between gap-4 md:gap-10">
             {/* MOBILE MENU TOGGLE */}
             <button
-              className="text-white text-xl md:hidden focus:outline-none"
+              className="text-white text-xl md:hidden focus:outline-none whitespace-normal break-words"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? <FaTimes /> : <FaBars />}
@@ -71,7 +74,7 @@ const Header = () => {
               to="/"
               className="text-white text-2xl md:text-4xl font-bold tracking-tighter"
             >
-              kapee<span className="text-orange-400">.</span>
+              GuraFaster<span className="text-orange-400">.</span>
             </Link>
 
             {/* SEARCH (desktop / expanded mobile) */}
@@ -86,7 +89,7 @@ const Header = () => {
             <div className="flex items-center gap-4 md:gap-7 text-white">
               {/* MOBILE SEARCH TOGGLE */}
               <button
-                className="md:hidden text-lg"
+                className="md:hidden text-lg whitespace-normal break-words"
                 onClick={() => setIsSearchOpen(!isSearchOpen)}
               >
                 <FaSearch />
@@ -116,6 +119,20 @@ const Header = () => {
                         onClick={() => setIsUserMenuOpen(false)}
                       />
                       <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-xl py-2 z-50">
+                        {/* Admin-only: back to dashboard */}
+                        {user.role === "admin" && (
+                          <>
+                            <Link
+                              to="/admin"
+                              className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 transition"
+                              onClick={() => setIsUserMenuOpen(false)}
+                            >
+                              <FaTachometerAlt className="text-blue-500" />
+                              Admin Dashboard
+                            </Link>
+                            <hr className="my-2" />
+                          </>
+                        )}
                         <Link
                           to="/account"
                           className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition"
@@ -133,7 +150,7 @@ const Header = () => {
                         <hr className="my-2" />
                         <button
                           onClick={handleLogout}
-                          className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition"
+                          className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition whitespace-normal break-words"
                         >
                           Logout
                         </button>
@@ -176,7 +193,7 @@ const Header = () => {
                   </span>
                 </div>
                 <span className="hidden sm:inline font-bold text-sm">
-                  ${subtotal.toFixed(2)}
+                  {convertPrice(subtotal)}
                 </span>
               </div>
             </div>

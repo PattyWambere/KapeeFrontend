@@ -24,17 +24,17 @@ const categoryService = {
     },
 
     createCategory: async (data: Partial<Category>): Promise<Category> => {
-        const response = await client.post("/categories/categories", data);
+        const response = await client.post("/categories/createCategory", data);
         return response.data;
     },
 
     updateCategory: async (id: string, data: Partial<Category>): Promise<Category> => {
-        const response = await client.put(`/categories/categories/${id}`, data);
+        const response = await client.put(`/categories/updateCategory/${id}`, data);
         return response.data;
     },
 
     deleteCategory: async (id: string): Promise<void> => {
-        await client.delete(`/categories/categories/${id}`);
+        await client.delete(`/categories/deleteCategory/${id}`);
     }
 };
 

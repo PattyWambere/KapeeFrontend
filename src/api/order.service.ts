@@ -13,6 +13,13 @@ export interface Order {
     items: OrderItem[];
     totalAmount: number;
     status: "pending" | "shipped" | "delivered" | "cancelled";
+    paymentMethod?: "card" | "cod";
+    paymentStatus?: "pending" | "paid" | "failed";
+    paymentDetails?: {
+        cardType?: string;
+        last4?: string;
+        transactionId?: string;
+    };
     createdAt: string;
     updatedAt: string;
 }
@@ -21,8 +28,16 @@ const orderService = {
     /**
      * Create a new order from the current user's cart
      */
-    createOrder: async (): Promise<Order> => {
-        const response = await client.post("/orders/createOrders");
+    createOrder: async (paymentMethod?: string, paymentDetails?: any): Promise<Order> => {
+        const response = await client.post("/orders/createOrders", { paymentMethod, paymentDetails });
+        return response.data;
+    },
+
+    /**
+     * Create Stripe PaymentIntent
+     */
+    createPaymentIntent: async (data?: { paymentMethodId?: string }): Promise<{ clientSecret: string; totalAmount: number; fallback?: boolean; status?: string }> => {
+        const response = await client.post("/orders/create-payment-intent", data || {});
         return response.data;
     },
 

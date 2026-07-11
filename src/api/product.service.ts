@@ -9,6 +9,7 @@ export interface Product {
     inStock: boolean;
     quantity: number;
     images: string[];
+    colors?: string[];
 }
 
 const productService = {
@@ -31,16 +32,18 @@ const productService = {
     /**
      * Create a new product
      */
-    createProduct: async (data: Partial<Product>): Promise<Product> => {
-        const response = await client.post("/products/products", data);
+    createProduct: async (data: FormData | Partial<Product>): Promise<Product> => {
+        const headers = data instanceof FormData ? { 'Content-Type': 'multipart/form-data' } : {};
+        const response = await client.post("/products/createProduct", data, { headers });
         return response.data;
     },
 
     /**
      * Update an existing product
      */
-    updateProduct: async (id: string, data: Partial<Product>): Promise<Product> => {
-        const response = await client.put(`/products/products/${id}`, data);
+    updateProduct: async (id: string, data: FormData | Partial<Product>): Promise<Product> => {
+        const headers = data instanceof FormData ? { 'Content-Type': 'multipart/form-data' } : {};
+        const response = await client.put(`/products/updateProduct/${id}`, data, { headers });
         return response.data;
     },
 
@@ -48,7 +51,7 @@ const productService = {
      * Delete a product
      */
     deleteProduct: async (id: string): Promise<void> => {
-        await client.delete(`/products/products/${id}`);
+        await client.delete(`/products/deleteProduct/${id}`);
     }
 };
 

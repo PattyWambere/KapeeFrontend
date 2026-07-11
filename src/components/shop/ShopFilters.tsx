@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { FaChevronDown, FaStar } from "react-icons/fa";
 import categoryService, { type Category as ApiCategory } from "../../api/category.service";
 import type { Filters } from "../../pages/Shop";
+import { useCurrency } from "../../context/CurrencyContext";
 
 const FilterSection = ({
   title,
@@ -17,7 +18,7 @@ const FilterSection = ({
   return (
     <div className="border-b border-gray-100 py-6">
       <button
-        className="w-full flex justify-between items-center text-[10px] font-black text-gray-900 mb-4 uppercase tracking-[0.2em]"
+        className="w-full flex justify-between items-center text-[10px] font-black text-gray-900 mb-4 uppercase tracking-[0.2em] whitespace-normal break-words"
         onClick={() => setIsOpen(!isOpen)}
       >
         {title}
@@ -41,6 +42,7 @@ const ShopFilters = ({
   setFilters: React.Dispatch<React.SetStateAction<Filters>>;
 }) => {
   const [categories, setCategories] = useState<ApiCategory[]>([]);
+  const { convertPrice } = useCurrency();
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -65,7 +67,7 @@ const ShopFilters = ({
           onClick={() =>
             setFilters({
               category: null,
-              price: 500,
+              price: 10000,
               color: null,
               size: null,
               rating: null,
@@ -115,14 +117,14 @@ const ShopFilters = ({
               Max Price
             </span>
             <span className="text-sm font-black text-gray-900">
-              ${filters.price}
+              {convertPrice(filters.price)}
             </span>
           </div>
 
           <input
             type="range"
             min="10"
-            max="2000"
+            max="10000"
             value={filters.price}
             onChange={(e) =>
               setFilters({
@@ -133,8 +135,8 @@ const ShopFilters = ({
             className="w-full h-1.5 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-orange-500"
           />
           <div className="flex justify-between text-[8px] font-black text-gray-300 uppercase tracking-widest">
-            <span>$10</span>
-            <span>$2000</span>
+            <span>{convertPrice(10)}</span>
+            <span>{convertPrice(10000)}</span>
           </div>
         </div>
       </FilterSection>
@@ -220,7 +222,7 @@ const ShopFilters = ({
         <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-white/10 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
         <h4 className="text-base font-black uppercase tracking-tighter mb-2 relative z-10">Need Help?</h4>
         <p className="text-[10px] font-bold opacity-80 mb-6 relative z-10 uppercase tracking-widest">Our dessert experts are here for you.</p>
-        <button className="bg-white text-blue-600 px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest relative z-10 hover:bg-black hover:text-white transition-all">Chat Now</button>
+        <button className="bg-white text-blue-600 px-4 md:px-6 py-3 rounded-none text-[10px] font-black uppercase tracking-widest relative z-10 hover:bg-black hover:text-white transition-all whitespace-normal break-words">Chat Now</button>
       </div> */}
     </div>
   );

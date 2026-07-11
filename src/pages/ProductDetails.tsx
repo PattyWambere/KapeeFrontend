@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import {
   FaStar,
   FaHeart,
@@ -8,15 +8,13 @@ import {
   FaPlus,
   FaShareAlt,
   FaChevronLeft,
-  FaUndo,
-  FaHandHoldingUsd,
-  FaShippingFast,
   FaRulerHorizontal,
   FaExchangeAlt,
   FaQuestionCircle,
 } from "react-icons/fa";
 import { useCart } from "../context/CartContext";
 import { useWishlist } from "../context/WishlistContext";
+import { useCurrency } from "../context/CurrencyContext";
 import ProductCard from "../components/shop/ProductCard";
 import client from "../api/client";
 
@@ -37,6 +35,7 @@ interface Product {
 
 const ProductDetails = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [product, setProduct] = useState<Product | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -48,15 +47,11 @@ const ProductDetails = () => {
   const [isSubmittingRating, setIsSubmittingRating] = useState(false);
   const [ratingMessage, setRatingMessage] = useState("");
   const [activeTab, setActiveTab] = useState("description");
-  const [timeLeft, setTimeLeft] = useState({
-    days: 337,
-    hrs: 15,
-    mins: 45,
-    secs: 2,
-  });
 
   const { addToCart } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
+  const { convertPrice } = useCurrency();
+  const liked = product ? isInWishlist(product.id) : false;
 
   useEffect(() => {
     const fetchProductData = async () => {
@@ -104,21 +99,7 @@ const ProductDetails = () => {
     }
   }, [id]);
 
-  // Timer effect
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev.secs > 0) return { ...prev, secs: prev.secs - 1 };
-        if (prev.mins > 0) return { ...prev, mins: prev.mins - 1, secs: 59 };
-        if (prev.hrs > 0)
-          return { ...prev, hrs: prev.hrs - 1, mins: 59, secs: 59 };
-        if (prev.days > 0)
-          return { ...prev, days: prev.days - 1, hrs: 23, mins: 59, secs: 59 };
-        return prev;
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
+
 
   if (loading) {
     return (
@@ -154,12 +135,35 @@ const ProductDetails = () => {
     );
   }
 
-  const liked = isInWishlist(product.id);
+  const handleShare = async () => {
+    if (!product) return;
+    
+    const shareData = {
+      title: product.name,
+      text: `Check out ${product.name} at our store!`,
+      url: window.location.href,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        console.error("Error sharing:", err);
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        alert("Link copied to clipboard!");
+      } catch (err) {
+        console.error("Failed to copy link:", err);
+      }
+    }
+  };
 
   return (
     <div className="bg-white">
       {/* Breadcrumb */}
-      <div className="border-b border-gray-100 sticky top-[80px] bg-white z-30">
+      <div className="border-b border-gray-100 bg-white">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between text-[11px] md:text-[13px] text-gray-500 overflow-x-auto whitespace-nowrap scrollbar-hide">
           <div className="flex items-center gap-2">
             <Link to="/" className="hover:text-orange-500">
@@ -175,7 +179,7 @@ const ProductDetails = () => {
             </span>
           </div>
           <div className="flex items-center gap-4 ml-4">
-            <FaShareAlt className="cursor-pointer hover:text-orange-500" />
+            <FaShareAlt onClick={handleShare} className="cursor-pointer hover:text-orange-500" title="Share Product" />
             <FaChevronLeft className="cursor-pointer hover:text-orange-500" />
           </div>
         </div>
@@ -184,27 +188,27 @@ const ProductDetails = () => {
       <div className="max-w-7xl mx-auto px-4 py-6 md:py-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 mb-16">
           {/* Image Section */}
-          <div className="lg:col-span-6 flex flex-col md:flex-row gap-4">
+          <div className="lg:col-span-6 flex flex-col-reverse md:flex-row gap-4">
             {/* Thumbnails */}
-            <div className="hidden md:flex flex-col gap-4 w-20">
+            <div className="flex md:flex-col gap-3 overflow-x-auto md:overflow-x-visible w-full md:w-20 pb-2 md:pb-0 shrink-0">
               {product.images.map((img, i) => (
                 <div
                   key={i}
                   onMouseEnter={() => setMainImage(img)}
                   onClick={() => setMainImage(img)}
-                  className={`border rounded overflow-hidden cursor-pointer transition-all shrink-0 ${mainImage === img ? "border-orange-500 ring-2 ring-orange-500/20" : "border-gray-100 hover:border-gray-300"}`}
+                  className={`border rounded-xl overflow-hidden cursor-pointer transition-all shrink-0 w-16 h-16 md:w-full md:h-20 ${mainImage === img ? "border-orange-500 ring-2 ring-orange-500/20" : "border-gray-100 hover:border-gray-300"}`}
                 >
-                  <img src={img} alt="" className="w-full h-20 object-cover" />
+                  <img src={img} alt="" className="w-full h-full object-cover" />
                 </div>
               ))}
             </div>
             {/* Main Image */}
             <div className="relative flex-1">
-              <div className="overflow-hidden bg-gray-50 rounded-lg shadow-sm border border-gray-100 h-full">
+              <div className="overflow-hidden bg-gray-50 rounded-2xl shadow-sm border border-gray-100 h-full">
                 <img
                   src={mainImage || "/images/placeholder.png"}
                   alt={product.name}
-                  className="w-full h-[400px] md:h-[600px] object-cover hover:scale-105 transition-transform duration-500"
+                  className="w-full h-[350px] sm:h-[450px] md:h-[600px] object-cover hover:scale-105 transition-transform duration-500"
                 />
               </div>
             </div>
@@ -223,40 +227,12 @@ const ProductDetails = () => {
               <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
                 {product.numReviews || 0} Reviews
               </span>
-              <div className="hidden sm:block h-4 w-[1px] bg-gray-200 mx-1"></div>
-              {/* Countdown Timer */}
-              <div className="flex items-center gap-2 md:gap-3">
-                {[
-                  { label: "Days", val: timeLeft.days },
-                  { label: "Hrs", val: timeLeft.hrs },
-                  { label: "Mins", val: timeLeft.mins },
-                  { label: "Secs", val: timeLeft.secs },
-                ].map((item) => (
-                  <div
-                    key={item.label}
-                    className="flex flex-col items-center border border-gray-100 px-2 py-1 min-w-[38px] md:min-w-[45px] rounded bg-gray-50/50"
-                  >
-                    <span className="text-blue-600 font-bold text-sm md:text-lg leading-none">
-                      {String(item.val).padStart(2, "0")}
-                    </span>
-                    <span className="text-[8px] md:text-[10px] text-gray-400 uppercase font-bold mt-0.5">
-                      {item.label}
-                    </span>
-                  </div>
-                ))}
-              </div>
             </div>
 
             <div className="flex items-center gap-3 mb-2">
               <div className="text-2xl md:text-3xl font-black text-gray-900">
-                ${product.price.toFixed(2)}
+                {convertPrice(product.price)}
               </div>
-              <span className="text-lg text-gray-300 line-through">
-                ${(product.price * 1.2).toFixed(2)}
-              </span>
-              <span className="text-[10px] font-bold text-white bg-blue-600 px-2 py-1 rounded-sm uppercase tracking-widest">
-                20% Off
-              </span>
             </div>
 
             <div
@@ -267,73 +243,9 @@ const ProductDetails = () => {
                 : "Out of Stock"}
             </div>
 
-            {/* Offers */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-              {[
-                {
-                  icon: <FaUndo />,
-                  text: "Special Price: Get extra 10% off",
-                  color: "text-green-600",
-                },
-                {
-                  icon: <FaHandHoldingUsd />,
-                  text: "Bank Offer: 10% Instant Discount",
-                  color: "text-blue-600",
-                },
-                {
-                  icon: <FaShippingFast />,
-                  text: "No cost EMI: Starting at $49/mo",
-                  color: "text-orange-600",
-                },
-              ].map((offer, i) => (
-                <div
-                  key={i}
-                  className="flex items-center gap-3 p-3 border border-dashed border-gray-200 rounded-lg group hover:border-gray-300 transition-colors"
-                >
-                  <span className={`${offer.color} text-lg`}>{offer.icon}</span>
-                  <span className="text-[11px] font-bold text-gray-600 uppercase leading-snug">
-                    {offer.text}
-                  </span>
-                </div>
-              ))}
-            </div>
 
-            {/* Services & Highlights */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10 text-[12px] bg-gray-50 p-6 rounded-xl border border-gray-100">
-              <div>
-                <span className="block font-black text-gray-900 mb-4 uppercase tracking-[0.2em] text-[10px]">
-                  Services:
-                </span>
-                <ul className="space-y-3 text-gray-600 font-medium">
-                  <li className="flex items-center gap-3">
-                    <FaQuestionCircle className="text-blue-600" size={12} /> 30
-                    Day Return Policy
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <FaQuestionCircle className="text-blue-600" size={12} />{" "}
-                    Cash on Delivery available
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <FaQuestionCircle className="text-blue-600" size={12} />{" "}
-                    Free Delivery on $99+
-                  </li>
-                </ul>
-              </div>
-              <div className="border-t sm:border-t-0 sm:border-l border-gray-200 pt-6 sm:pt-0 sm:pl-6">
-                <span className="block font-black text-gray-900 mb-4 uppercase tracking-[0.2em] text-[10px]">
-                  Highlights:
-                </span>
-                <ul className="space-y-3 text-gray-600 font-medium">
-                  <li className="flex items-center gap-3">• Premium Design.</li>
-                  <li className="flex items-center gap-3">
-                    • 100% Quality Materials.
-                  </li>
-                  <li className="flex items-center gap-3">
-                    • Perfect Fit Guaranteed.
-                  </li>
-                </ul>
-              </div>
-            </div>
+
+
 
             {/* Options Selector */}
             <div className="space-y-10 mb-10 border-t border-gray-100 pt-8">
@@ -375,7 +287,7 @@ const ProductDetails = () => {
                     ))}
                     {selectedSize && (
                       <button
-                        className="text-[10px] font-black text-gray-400 uppercase tracking-widest hover:text-red-500 transition-colors ml-2"
+                        className="text-[10px] font-black text-gray-400 uppercase tracking-widest hover:text-red-500 transition-colors ml-2 whitespace-normal break-words"
                         onClick={() => setSelectedSize(null)}
                       >
                         Clear
@@ -422,7 +334,19 @@ const ProductDetails = () => {
                 >
                   Add To Cart
                 </button>
-                <button className="flex-1 bg-orange-500 text-white font-black text-xs uppercase tracking-[0.2em] rounded-lg h-14 hover:opacity-90 transition-all duration-300 shadow-xl active:scale-[0.98]">
+                <button 
+                  onClick={() => {
+                    addToCart(
+                      {
+                        ...product,
+                        title: product.name,
+                        image: product.images[0],
+                      },
+                      quantity,
+                    );
+                    navigate("/checkout");
+                  }}
+                  className="flex-1 bg-orange-500 text-white font-black text-xs uppercase tracking-[0.2em] rounded-none h-14 hover:opacity-90 transition-all duration-300 shadow-xl active:scale-[0.98] whitespace-normal break-words">
                   Buy It Now
                 </button>
               </div>
@@ -447,10 +371,10 @@ const ProductDetails = () => {
                 )}{" "}
                 Add to Wishlist
               </button>
-              <button className="flex items-center gap-3 hover:text-orange-500 transition">
+              <button className="flex items-center gap-3 hover:text-orange-500 transition whitespace-normal break-words">
                 <FaRulerHorizontal className="text-sm" /> Size Guide
               </button>
-              <button className="flex items-center gap-3 hover:text-orange-500 transition">
+              <button className="flex items-center gap-3 hover:text-orange-500 transition whitespace-normal break-words">
                 <FaExchangeAlt className="text-sm" /> Contrast
               </button>
             </div>
