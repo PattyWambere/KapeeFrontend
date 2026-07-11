@@ -91,7 +91,6 @@ const ManageOrders = () => {
     };
 
     // ── filter logic ──────────────────────────────────────────────────────────
-    const resetPage = () => setCurrentPage(1);
 
     const filteredOrders = useMemo(() => {
         return orders.filter(order => {

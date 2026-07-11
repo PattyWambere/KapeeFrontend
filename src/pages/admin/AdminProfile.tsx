@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, type ReactElement } from "react";
 import { useAuth } from "../../context/AuthContext";
 import {
     FaUser,
@@ -89,7 +89,7 @@ const AdminProfile = () => {
         }
     };
 
-    const tabs: { id: Tab; label: string; icon: JSX.Element }[] = [
+    const tabs: { id: Tab; label: string; icon: ReactElement }[] = [
         { id: "profile", label: "Profile Info", icon: <FaUser /> },
         { id: "avatar", label: "Change Avatar", icon: <FaCamera /> },
         { id: "password", label: "Change Password", icon: <FaLock /> },

@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import {
     FaChartLine,
@@ -16,7 +16,7 @@ interface AdminSidebarProps {
 }
 
 const AdminSidebar = ({ isOpen = false, onClose }: AdminSidebarProps) => {
-    const { user } = useAuth();
+    useAuth();
 
     const navItems = [
         { icon: <FaChartLine size={18} />,    label: "Dashboard",   path: "/admin" },
