@@ -1,14 +1,17 @@
-import { FaRegHeart, FaHeart, FaStar, FaRegStar } from "react-icons/fa";
+import { FaRegHeart, FaHeart, FaStar, FaRegStar, FaExchangeAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useWishlist } from "../../context/WishlistContext";
 import { useCurrency } from "../../context/CurrencyContext";
+import { useCompare } from "../../context/CompareContext";
 
 // Product interface is now handled by 'any' or external types to support dynamic data
 
 const ProductCard = ({ product, categoryName = "" }: { product: any; categoryName?: string }) => {
   const { toggleWishlist, isInWishlist } = useWishlist();
+  const { toggleCompare, isInCompare } = useCompare();
   const { convertPrice } = useCurrency();
   const liked = isInWishlist(product.id);
+  const inCompare = isInCompare(product.id);
 
   return (
     <div className="group relative z-0">
@@ -33,12 +36,26 @@ const ProductCard = ({ product, categoryName = "" }: { product: any; categoryNam
         <button
           onClick={() => toggleWishlist(product)}
           className="absolute top-3 right-3 bg-white p-2 rounded-full shadow-md transition hover:bg-orange-500 hover:text-white z-10"
+          title="Add to Wishlist"
         >
           {liked ? (
             <FaHeart className="text-red-500" size={14} />
           ) : (
             <FaRegHeart size={14} />
           )}
+        </button>
+
+        {/* Compare Button */}
+        <button
+          onClick={() => toggleCompare(product)}
+          title={inCompare ? "Remove from Compare" : "Add to Compare"}
+          className={`absolute top-14 right-3 p-2 rounded-full shadow-md transition z-10 ${
+            inCompare
+              ? "bg-orange-500 text-white"
+              : "bg-white hover:bg-orange-500 hover:text-white"
+          }`}
+        >
+          <FaExchangeAlt size={14} />
         </button>
       </div>
 

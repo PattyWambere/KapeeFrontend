@@ -8,6 +8,8 @@ import {
     FaHome,
     FaCog,
     FaTimes,
+    FaNewspaper,
+    FaInfoCircle,
 } from "react-icons/fa";
 
 interface AdminSidebarProps {
@@ -23,6 +25,8 @@ const AdminSidebar = ({ isOpen = false, onClose }: AdminSidebarProps) => {
         { icon: <FaBoxOpen size={18} />,      label: "Products",    path: "/admin/products" },
         { icon: <FaTags size={18} />,         label: "Categories",  path: "/admin/categories" },
         { icon: <FaShoppingCart size={18} />, label: "Orders",      path: "/admin/orders" },
+        { icon: <FaNewspaper size={18} />,    label: "Blog Posts",  path: "/admin/blog" },
+        { icon: <FaInfoCircle size={18} />,   label: "About Page",  path: "/admin/about" },
         { icon: <FaCog size={18} />,          label: "Settings",    path: "/admin/settings" },
     ];
 

@@ -265,7 +265,7 @@ const ManageCategories = () => {
             {showModal && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowModal(false)} />
-                    <div className="relative bg-white w-full max-w-lg shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+                    <div className="relative bg-white w-full max-w-lg shadow-2xl overflow-hidden">
                         <div className="p-8 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
                             <h3 className="text-xl font-black uppercase tracking-tighter">
                                 {editingCategory ? "Update" : "Add New"} <span className="text-blue-600">Category</span>

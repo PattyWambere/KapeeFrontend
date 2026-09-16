@@ -15,6 +15,7 @@ import {
 import { useCart } from "../context/CartContext";
 import { useWishlist } from "../context/WishlistContext";
 import { useCurrency } from "../context/CurrencyContext";
+import { useCompare } from "../context/CompareContext";
 import ProductCard from "../components/shop/ProductCard";
 import client from "../api/client";
 
@@ -50,8 +51,10 @@ const ProductDetails = () => {
 
   const { addToCart } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
+  const { toggleCompare, isInCompare } = useCompare();
   const { convertPrice } = useCurrency();
   const liked = product ? isInWishlist(product.id) : false;
+  const inCompare = product ? isInCompare(product.id) : false;
 
   useEffect(() => {
     const fetchProductData = async () => {
@@ -374,8 +377,20 @@ const ProductDetails = () => {
               <button className="flex items-center gap-3 hover:text-orange-500 transition whitespace-normal break-words">
                 <FaRulerHorizontal className="text-sm" /> Size Guide
               </button>
-              <button className="flex items-center gap-3 hover:text-orange-500 transition whitespace-normal break-words">
-                <FaExchangeAlt className="text-sm" /> Contrast
+              <button
+                onClick={() =>
+                  toggleCompare({
+                    ...product,
+                    title: product.name,
+                    image: product.images[0],
+                  })
+                }
+                className={`flex items-center gap-3 transition whitespace-normal break-words ${
+                  inCompare ? "text-orange-500" : "hover:text-orange-500"
+                }`}
+              >
+                <FaExchangeAlt className={`text-sm ${inCompare ? "text-orange-500" : ""}`} />
+                {inCompare ? "In Compare" : "Add to Compare"}
               </button>
             </div>
 

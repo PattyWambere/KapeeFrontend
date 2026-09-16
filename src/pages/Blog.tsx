@@ -1,198 +1,348 @@
-import { useState } from "react";
-import PageHeader from "../components/header/PageHeader";
-import { Link } from "react-router-dom";
-import { FaCalendarAlt, FaUser, FaChevronRight, FaSearch } from "react-icons/fa";
+import { useState, useEffect } from "react";
+import { useContent } from "../context/ContentContext";
+import type { BlogPost } from "../api/content.service";
+import {
+  FaCalendarAlt,
+  FaUser,
+  FaSearch,
+  FaClock,
+  FaNewspaper,
+  FaTimes,
+  FaChevronRight,
+} from "react-icons/fa";
 
-const Blog = () => {
-  const [activeTab, setActiveTab] = useState<"recent" | "popular" | "comments">("recent");
+// ── Helpers ────────────────────────────────────────────────────────────────────
 
-  const posts = [
-    {
-      id: 1,
-      title: "Do you Have A Passion for Photography",
-      excerpt: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem...",
-      image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=2070&auto=format&fit=crop",
-      date: "May 15, 2019",
-      author: "Hasmin Dyes",
-      category: "BEAUTIFUL LIFESTYLE"
-    },
-    {
-      id: 2,
-      title: "Notify What Makes You Happy, Smile More!",
-      excerpt: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem...",
-      image: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?q=80&w=1887&auto=format&fit=crop",
-      date: "May 20, 2019",
-      author: "Mariana Silva",
-      category: "HELPFUL TRAVEL"
-    },
-    {
-      id: 3,
-      title: "Fashion Elements In This Right Summer",
-      excerpt: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem...",
-      image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=2072&auto=format&fit=crop",
-      date: "May 16, 2019",
-      author: "Hasmin Dyes",
-      category: "BEAUTIFUL LIFESTYLE, TRAVEL"
-    },
-    {
-      id: 4,
-      title: "Understanding My Brand, I Go Beyond The Surface",
-      excerpt: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem...",
-      image: "https://images.unsplash.com/photo-1490114538077-0a7f8cb49891?q=80&w=2070&auto=format&fit=crop",
-      date: "Apr 28, 2019",
-      author: "Mariana Silva",
-      category: "ACCESSORIES BEAUTY, TRAVEL"
-    }
-  ];
+/** Render plain-text content where blank lines become paragraph breaks */
+const renderContent = (text: string) =>
+  text
+    .split(/\n\n+/)
+    .map((para, i) => (
+      <p key={i} className="text-gray-600 leading-relaxed text-sm md:text-base">
+        {para.trim()}
+      </p>
+    ));
 
-  const recentPosts = [
-    { title: "Do you Have A Passion for Photography", date: "May 15, 2019", image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=100&auto=format&fit=crop" },
-    { title: "Notify What Makes You Happy, Smile More!", date: "May 20, 2019", image: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?q=80&w=100&auto=format&fit=crop" },
-    { title: "Fashion Elements In This Right Summer", date: "May 27, 2019", image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=100&auto=format&fit=crop" },
-    { title: "Understanding My Brand, I Go Beyond The Surface", date: "Mar 11, 2019", image: "https://images.unsplash.com/photo-1490114538077-0a7f8cb49891?q=80&w=100&auto=format&fit=crop" },
-    { title: "My Life Style Is...", date: "Mar 11, 2019", image: "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?q=80&w=100&auto=format&fit=crop" }
-  ];
+// ── Post Modal ─────────────────────────────────────────────────────────────────
 
-  const archives = ["May 2019", "April 2019", "March 2019"];
-  const categories = ["Accessories", "Beauty", "Design", "Fashion Design", "Lifestyle"];
+const PostModal = ({
+  post,
+  onClose,
+}: {
+  post: BlogPost;
+  onClose: () => void;
+}) => {
+  // Close on Escape key
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [onClose]);
+
+  // Lock body scroll while open
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = ""; };
+  }, []);
+
+  const body = post.content?.trim() || post.excerpt;
 
   return (
-    <div className="bg-white min-h-screen pb-20">
-      <PageHeader title="Our Blog" />
+    <>
+      {/* Backdrop */}
+      <div
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+        onClick={onClose}
+      />
 
-      <div className="max-w-7xl mx-auto px-4 py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Main Content - Blog Posts */}
-          <div className="lg:col-span-2">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-              {posts.map((post) => (
-                <article key={post.id} className="group cursor-pointer">
-                  <div className="aspect-[4/3] rounded-lg overflow-hidden mb-6 shadow-lg">
-                    <img
-                      src={post.image}
-                      alt={post.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                    />
-                  </div>
-                  <div className="space-y-3">
-                    <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-blue-600">
-                      {post.category}
-                    </p>
-                    <h2 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors leading-tight">
-                      {post.title}
-                    </h2>
-                    <div className="flex items-center gap-4 text-[11px] text-gray-400">
-                      <div className="flex items-center gap-2">
-                        <FaUser className="text-blue-500" size={10} />
-                        By {post.author}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <FaCalendarAlt className="text-orange-500" size={10} />
-                        {post.date}
-                      </div>
-                    </div>
-                    <p className="text-sm text-gray-500 leading-relaxed">
-                      {post.excerpt}
-                    </p>
-                    <Link to="#" className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-blue-600 hover:text-orange-500 transition-all">
-                      Continue Reading
-                      <FaChevronRight size={8} />
-                    </Link>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
-
-          {/* Sidebar */}
-          <div className="space-y-8">
-            {/* Search */}
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search..."
-                className="w-full px-4 py-3 pr-12 border border-gray-200 focus:border-blue-500 focus:outline-none text-sm"
+      {/* Modal panel */}
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={post.title}
+        className="fixed inset-0 z-50 flex items-start justify-center px-4 py-8 md:py-12 overflow-y-auto"
+        onClick={onClose}
+      >
+        <div
+          className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Hero image */}
+          {post.image && (
+            <div className="aspect-[16/7] rounded-t-3xl overflow-hidden">
+              <img
+                src={post.image}
+                alt={post.title}
+                className="w-full h-full object-cover"
               />
-              <button className="absolute right-0 top-0 h-full px-4 bg-blue-600 text-white hover:bg-blue-700 transition whitespace-normal break-words">
-                <FaSearch size={14} />
+            </div>
+          )}
+
+          {/* Body */}
+          <div className="p-6 md:p-10 space-y-6">
+            {/* Category + close */}
+            <div className="flex items-center justify-between">
+              <span className="text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full bg-orange-50 text-orange-500 border border-orange-100">
+                {post.category}
+              </span>
+              <button
+                onClick={onClose}
+                aria-label="Close article"
+                className="w-8 h-8 rounded-full bg-gray-100 hover:bg-red-50 hover:text-red-500 flex items-center justify-center text-gray-500 transition"
+              >
+                <FaTimes size={12} />
               </button>
             </div>
 
-            {/* Tabs */}
-            <div>
-              <div className="flex border-b border-gray-200">
-                {(["recent", "popular", "comments"] as const).map((tab) => (
-                  <button
-                    key={tab}
-                    onClick={() => setActiveTab(tab)}
-                    className={`flex-1 py-3 text-xs font-bold uppercase tracking-wider transition ${activeTab === tab
-                        ? "text-blue-600 border-b-2 border-blue-600"
-                        : "text-gray-500 hover:text-gray-900"
-                      }`}
-                  >
-                    {tab}
-                  </button>
-                ))}
-              </div>
+            {/* Title */}
+            <h2 className="text-2xl md:text-3xl font-black text-gray-900 leading-tight">
+              {post.title}
+            </h2>
 
-              {/* Recent Posts List */}
-              <div className="pt-6 space-y-5">
-                {recentPosts.map((post, idx) => (
-                  <div key={idx} className="flex gap-4 group cursor-pointer">
-                    <div className="w-16 h-16 flex-shrink-0 rounded overflow-hidden">
-                      <img
-                        src={post.image}
-                        alt={post.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-xs font-semibold text-gray-900 group-hover:text-blue-600 transition line-clamp-2 leading-tight mb-1">
-                        {post.title}
-                      </h4>
-                      <p className="text-[10px] text-gray-400">{post.date}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+            {/* Meta */}
+            <div className="flex flex-wrap gap-4 text-[10px] font-bold uppercase tracking-wider text-gray-400 pb-6 border-b border-gray-100">
+              <span className="flex items-center gap-1.5">
+                <FaUser size={9} className="text-blue-400" />
+                {post.author}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <FaCalendarAlt size={9} className="text-orange-400" />
+                {post.date}
+              </span>
+              {post.readTime && (
+                <span className="flex items-center gap-1.5">
+                  <FaClock size={9} className="text-green-400" />
+                  {post.readTime}
+                </span>
+              )}
             </div>
 
-            {/* Archives */}
-            <div>
-              <h3 className="text-sm font-black uppercase tracking-wider mb-4 pb-3 border-b border-gray-200 flex justify-between items-center cursor-pointer">
-                Archives
-                <FaChevronRight size={10} className="text-gray-400" />
-              </h3>
-              <ul className="space-y-3">
-                {archives.map((archive, idx) => (
-                  <li key={idx}>
-                    <Link to="#" className="text-sm text-gray-600 hover:text-blue-600 transition">
-                      {archive}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            {/* Content */}
+            <div className="space-y-4">{renderContent(body)}</div>
 
-            {/* Categories */}
-            <div>
-              <h3 className="text-sm font-black uppercase tracking-wider mb-4 pb-3 border-b border-gray-200 flex justify-between items-center cursor-pointer">
-                Categories
-                <FaChevronRight size={10} className="text-gray-400" />
-              </h3>
-              <ul className="space-y-3">
-                {categories.map((category, idx) => (
-                  <li key={idx}>
-                    <Link to="#" className="text-sm text-gray-600 hover:text-blue-600 transition">
-                      {category}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+            {/* Close button */}
+            <div className="pt-4 border-t border-gray-100">
+              <button
+                onClick={onClose}
+                className="text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-gray-900 transition flex items-center gap-1.5"
+              >
+                <FaTimes size={10} />
+                Close Article
+              </button>
             </div>
           </div>
         </div>
       </div>
+    </>
+  );
+};
+
+// ── Blog Page ──────────────────────────────────────────────────────────────────
+
+const Blog = () => {
+  const { blogPosts } = useContent();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeCategory, setActiveCategory] = useState("ALL");
+  const [openPost, setOpenPost] = useState<BlogPost | null>(null);
+
+  // Derive unique categories from posts
+  const categories = [
+    "ALL",
+    ...Array.from(new Set(blogPosts.map((p) => p.category))),
+  ];
+
+  // Filter posts by search + category
+  const filteredPosts = blogPosts.filter((p) => {
+    const matchesSearch =
+      !searchQuery ||
+      p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.author.toLowerCase().includes(searchQuery.toLowerCase());
+
+    const matchesCategory =
+      activeCategory === "ALL" || p.category === activeCategory;
+
+    return matchesSearch && matchesCategory;
+  });
+
+  // A post has readable content when its content or excerpt is long enough
+  const hasContent = (post: BlogPost) =>
+    (post.content?.trim().length ?? 0) > 0 || post.excerpt.length > 120;
+
+  return (
+    <div className="bg-white min-h-screen pb-20">
+      {/* ── Page Header ── */}
+      <div className="bg-gray-50 border-b border-gray-100">
+        <div className="max-w-5xl mx-auto px-4 py-14 text-center">
+          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-orange-500 mb-3">
+            Our Journal
+          </p>
+          <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-gray-900 mb-4">
+            Style Blog
+          </h1>
+          <p className="text-gray-400 text-sm font-medium max-w-md mx-auto">
+            Fashion tips, trend reports, and style inspiration — updated by our team.
+          </p>
+        </div>
+      </div>
+
+      <div className="max-w-6xl mx-auto px-4 py-12">
+
+        {/* ── Search + Category Filters ── */}
+        <div className="flex flex-col md:flex-row gap-4 mb-10 items-start md:items-center justify-between">
+          {/* Search */}
+          <div className="relative w-full md:w-72">
+            <input
+              id="blog-search"
+              type="text"
+              placeholder="Search articles..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 border-2 border-gray-100 rounded-xl focus:border-orange-400 focus:outline-none text-sm bg-gray-50 focus:bg-white transition"
+            />
+            <FaSearch
+              size={13}
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"
+            />
+          </div>
+
+          {/* Category pills */}
+          <div className="flex flex-wrap gap-2">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider transition-all duration-200 ${
+                  activeCategory === cat
+                    ? "bg-orange-500 text-white shadow-md shadow-orange-200"
+                    : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* ── Result count ── */}
+        {(searchQuery || activeCategory !== "ALL") && (
+          <p className="text-[11px] font-black uppercase tracking-widest text-gray-400 mb-6">
+            {filteredPosts.length} article{filteredPosts.length !== 1 ? "s" : ""} found
+            {searchQuery && (
+              <>
+                {" "}for "
+                <span className="text-orange-500">{searchQuery}</span>"
+              </>
+            )}
+          </p>
+        )}
+
+        {/* ── Posts Grid ── */}
+        {filteredPosts.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredPosts.map((post) => (
+              <article
+                key={post.id}
+                className="group flex flex-col bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+              >
+                {/* Thumbnail */}
+                <div className="aspect-[16/10] overflow-hidden bg-gray-100">
+                  {post.image ? (
+                    <img
+                      src={post.image}
+                      alt={post.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <FaNewspaper size={32} className="text-gray-300" />
+                    </div>
+                  )}
+                </div>
+
+                {/* Content */}
+                <div className="flex flex-col flex-1 p-5 gap-3">
+                  {/* Category badge */}
+                  <span className="self-start text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full bg-orange-50 text-orange-500 border border-orange-100">
+                    {post.category}
+                  </span>
+
+                  {/* Title */}
+                  <h2 className="text-base font-black text-gray-900 leading-snug line-clamp-2">
+                    {post.title}
+                  </h2>
+
+                  {/* Excerpt */}
+                  <p className="text-sm text-gray-500 leading-relaxed line-clamp-3 flex-1">
+                    {post.excerpt}
+                  </p>
+
+                  {/* Continue Reading — only when there's content worth showing */}
+                  {hasContent(post) && (
+                    <button
+                      onClick={() => setOpenPost(post)}
+                      className="self-start inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-orange-500 hover:text-orange-600 transition-colors group/btn mt-1"
+                    >
+                      Continue Reading
+                      <FaChevronRight
+                        size={8}
+                        className="group-hover/btn:translate-x-0.5 transition-transform"
+                      />
+                    </button>
+                  )}
+
+                  {/* Meta */}
+                  <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-gray-100 text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+                    <span className="flex items-center gap-1.5">
+                      <FaUser size={9} className="text-blue-400" />
+                      {post.author}
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <FaCalendarAlt size={9} className="text-orange-400" />
+                      {post.date}
+                    </span>
+                    {post.readTime && (
+                      <span className="flex items-center gap-1.5">
+                        <FaClock size={9} className="text-green-400" />
+                        {post.readTime}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          /* ── Empty state ── */
+          <div className="text-center py-24 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white shadow-sm mb-6">
+              <FaNewspaper size={28} className="text-gray-300" />
+            </div>
+            <h3 className="text-xl font-black uppercase tracking-tighter text-gray-400 mb-2">
+              No Articles Found
+            </h3>
+            <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-6">
+              {searchQuery
+                ? `No results for "${searchQuery}"`
+                : "No posts in this category yet"}
+            </p>
+            <button
+              onClick={() => {
+                setSearchQuery("");
+                setActiveCategory("ALL");
+              }}
+              className="text-[10px] font-black uppercase tracking-widest text-orange-500 border-b-2 border-orange-500 pb-0.5 hover:text-orange-600 transition"
+            >
+              Clear Filters
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* ── Post Modal ── */}
+      {openPost && (
+        <PostModal post={openPost} onClose={() => setOpenPost(null)} />
+      )}
     </div>
   );
 };

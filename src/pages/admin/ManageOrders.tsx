@@ -366,7 +366,7 @@ const ManageOrders = () => {
             {showModal && selectedOrder && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowModal(false)} />
-                    <div className="relative bg-white w-full max-w-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+                    <div className="relative bg-white w-full max-w-2xl shadow-2xl overflow-hidden">
                         <div className="p-8 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
                             <div>
                                 <h3 className="text-xl font-black uppercase tracking-tighter">
@@ -384,7 +384,7 @@ const ManageOrders = () => {
                             </button>
                         </div>
 
-                        <div className="p-8 space-y-8 max-h-[70vh] overflow-y-auto">
+                        <div className="p-8 space-y-8 max-h-[70vh] overflow-y-auto" style={{scrollbarWidth:'none',msOverflowStyle:'none'}}>
                             {/* Items */}
                             <div className="space-y-4">
                                 <h4 className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Order Items</h4>

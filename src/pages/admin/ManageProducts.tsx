@@ -399,7 +399,7 @@ const ManageProducts = () => {
             {showModal && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowModal(false)} />
-                    <div className="relative bg-white w-full max-w-4xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300 flex flex-col max-h-[90vh]">
+                    <div className="relative bg-white w-full max-w-4xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
                         <div className="p-8 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
                             <h3 className="text-xl font-black uppercase tracking-tighter">
                                 {editingProduct ? "Edit" : "Add New"} <span className="text-blue-600">Product</span>
@@ -409,7 +409,8 @@ const ManageProducts = () => {
                             </button>
                         </div>
 
-                        <form onSubmit={handleSubmit} className="p-8 overflow-y-auto space-y-8">
+                        <form onSubmit={handleSubmit} className="p-8 space-y-8 overflow-y-auto" style={{scrollbarWidth:'none',msOverflowStyle:'none'}}>
+                        <style>{`form::-webkit-scrollbar{display:none}`}</style>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 {/* Left Column: Basic Info */}
                                 <div className="space-y-6">
@@ -419,7 +420,7 @@ const ManageProducts = () => {
                                             type="text" required
                                             value={formData.name}
                                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                            className="w-full px-6 py-4 rounded-2xl bg-gray-50 border border-gray-100 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100 font-bold tracking-tight transition-all"
+                                            className="w-full px-6 py-4 bg-gray-50 border border-gray-100 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100 font-bold tracking-tight transition-all"
                                             placeholder="Enter product name..."
                                         />
                                     </div>
@@ -431,7 +432,7 @@ const ManageProducts = () => {
                                                 type="number" step="0.01" required
                                                 value={formData.price}
                                                 onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) })}
-                                                className="w-full px-6 py-4 rounded-2xl bg-gray-50 border border-gray-100 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100 font-bold tracking-tight transition-all"
+                                                className="w-full px-6 py-4 bg-gray-50 border border-gray-100 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100 font-bold tracking-tight transition-all"
                                             />
                                         </div>
                                         <div className="space-y-2">
@@ -440,7 +441,7 @@ const ManageProducts = () => {
                                                 type="number" required
                                                 value={formData.quantity}
                                                 onChange={(e) => setFormData({ ...formData, quantity: parseInt(e.target.value) })}
-                                                className="w-full px-6 py-4 rounded-2xl bg-gray-50 border border-gray-100 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100 font-bold tracking-tight transition-all"
+                                                className="w-full px-6 py-4 bg-gray-50 border border-gray-100 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100 font-bold tracking-tight transition-all"
                                             />
                                         </div>
                                     </div>
@@ -451,7 +452,7 @@ const ManageProducts = () => {
                                             required
                                             value={formData.categoryId}
                                             onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
-                                            className="w-full px-6 py-4 rounded-2xl bg-gray-50 border border-gray-100 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100 font-bold tracking-tight transition-all appearance-none"
+                                            className="w-full px-6 py-4 bg-gray-50 border border-gray-100 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100 font-bold tracking-tight transition-all appearance-none"
                                         >
                                             <option value="" disabled>Select a category</option>
                                             {categories.map(cat => (
@@ -465,7 +466,7 @@ const ManageProducts = () => {
                                         <textarea
                                             value={formData.description}
                                             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                            className="w-full px-6 py-4 rounded-2xl bg-gray-50 border border-gray-100 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100 font-medium tracking-tight h-32 resize-none transition-all"
+                                            className="w-full px-6 py-4 bg-gray-50 border border-gray-100 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100 font-medium tracking-tight h-32 resize-none transition-all"
                                             placeholder="Enter product description..."
                                         />
                                     </div>
@@ -528,7 +529,7 @@ const ManageProducts = () => {
                                         />
                                         <label
                                             htmlFor="product-image-upload"
-                                            className="flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-2xl p-8 cursor-pointer hover:border-blue-500 hover:bg-blue-50/20 transition-all group"
+                                            className="flex flex-col items-center justify-center border-2 border-dashed border-gray-200 p-8 cursor-pointer hover:border-blue-500 hover:bg-blue-50/20 transition-all group"
                                         >
                                             <FaImage className="text-gray-300 group-hover:text-blue-500 transition-colors mb-3" size={32} />
                                             <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 group-hover:text-blue-600 transition-colors">Upload Images</span>
@@ -536,21 +537,21 @@ const ManageProducts = () => {
                                         </label>
 
                                         {/* Image Previews */}
-                                        <div className="grid grid-cols-2 gap-4 max-h-[250px] overflow-y-auto pr-1">
+                                        <div className="grid grid-cols-2 gap-4 max-h-[250px] overflow-y-auto pr-1" style={{scrollbarWidth:'none'}}>
                                             {images.map((img) => (
-                                                <div key={img.id} className="relative rounded-2xl overflow-hidden border border-gray-100 bg-gray-50 aspect-video group shadow-sm">
+                                                <div key={img.id} className="relative overflow-hidden border border-gray-100 bg-gray-50 aspect-video group shadow-sm">
                                                     <img src={img.url} alt="Product image preview" className="w-full h-full object-cover" />
                                                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                                         <button
                                                             type="button"
                                                             onClick={() => removeImage(img.id)}
-                                                            className="w-10 h-10 rounded-xl bg-red-600 text-white flex items-center justify-center hover:bg-red-700 transition-colors shadow-lg"
+                                                            className="w-10 h-10 bg-red-600 text-white flex items-center justify-center hover:bg-red-700 transition-colors shadow-lg"
                                                         >
                                                             <FaTrash size={14} />
                                                         </button>
                                                     </div>
                                                     {img.file && (
-                                                        <span className="absolute top-2 left-2 bg-blue-600 text-white text-[8px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider shadow">
+                                                        <span className="absolute top-2 left-2 bg-blue-600 text-white text-[8px] font-black uppercase px-2 py-0.5 tracking-wider shadow">
                                                             New
                                                         </span>
                                                     )}
