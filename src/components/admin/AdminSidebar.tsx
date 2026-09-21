@@ -1,14 +1,8 @@
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import {
-    FaBoxOpen,
-    FaTags,
-    FaShoppingCart,
     FaHome,
-    FaCog,
     FaTimes,
-    FaNewspaper,
-    FaInfoCircle,
 } from "react-icons/fa";
 
 interface AdminSidebarProps {
@@ -18,15 +12,6 @@ interface AdminSidebarProps {
 
 const AdminSidebar = ({ isOpen = false, onClose }: AdminSidebarProps) => {
     useAuth();
-
-    const navItems = [
-        { icon: <FaBoxOpen size={18} />,      label: "Products",    path: "/admin/products" },
-        { icon: <FaTags size={18} />,         label: "Categories",  path: "/admin/categories" },
-        { icon: <FaShoppingCart size={18} />, label: "Orders",      path: "/admin/orders" },
-        { icon: <FaNewspaper size={18} />,    label: "Blog Posts",  path: "/admin/blog" },
-        { icon: <FaInfoCircle size={18} />,   label: "About Page",  path: "/admin/about" },
-        { icon: <FaCog size={18} />,          label: "Settings",    path: "/admin/settings" },
-    ];
 
     return (
         <aside
@@ -69,46 +54,6 @@ const AdminSidebar = ({ isOpen = false, onClose }: AdminSidebarProps) => {
                 <p className="text-[9px] font-black uppercase tracking-[0.28em] text-gray-400 px-3 pb-4">
                     Navigation
                 </p>
-
-                {navItems.map((item) => (
-                    <NavLink
-                        key={item.path}
-                        to={item.path}
-                        end={item.path === "/admin"}
-                        onClick={onClose}
-                        className={({ isActive }) =>
-                            `group relative flex items-center gap-4 px-4 py-4 text-[11px] font-black uppercase tracking-[0.18em] transition-all duration-200
-                            ${isActive
-                                ? "text-blue-600 bg-blue-50"
-                                : "text-gray-600 hover:text-gray-900"
-                            }`
-                        }
-                    >
-                        {({ isActive }) => (
-                            <>
-                                {/* Left accent border */}
-                                <span className={`absolute left-0 top-0 h-full w-[3px] transition-all duration-200 ${
-                                    isActive ? "bg-blue-600" : "bg-transparent group-hover:bg-blue-200"
-                                }`} />
-
-                                {/* Icon */}
-                                <span className={`flex-shrink-0 transition-colors duration-200 ${
-                                    isActive ? "text-blue-600" : "text-gray-500 group-hover:text-gray-900"
-                                }`}>
-                                    {item.icon}
-                                </span>
-
-                                {/* Label */}
-                                <span className="flex-1">{item.label}</span>
-
-                                {/* Active dot */}
-                                {isActive && (
-                                    <span className="w-2 h-2 rounded-full bg-blue-600 flex-shrink-0" />
-                                )}
-                            </>
-                        )}
-                    </NavLink>
-                ))}
             </nav>
 
             {/* ── Divider ── */}
