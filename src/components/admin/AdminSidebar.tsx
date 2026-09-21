@@ -1,7 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import {
-    FaChartLine,
     FaBoxOpen,
     FaTags,
     FaShoppingCart,
@@ -21,7 +20,6 @@ const AdminSidebar = ({ isOpen = false, onClose }: AdminSidebarProps) => {
     useAuth();
 
     const navItems = [
-        { icon: <FaChartLine size={18} />,    label: "Dashboard",   path: "/admin" },
         { icon: <FaBoxOpen size={18} />,      label: "Products",    path: "/admin/products" },
         { icon: <FaTags size={18} />,         label: "Categories",  path: "/admin/categories" },
         { icon: <FaShoppingCart size={18} />, label: "Orders",      path: "/admin/orders" },
