@@ -28,7 +28,6 @@ import ResetPassword from "./pages/ResetPassword";
 // Admin Pages
 import AdminLayout from "./layouts/AdminLayout";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
-import AdminDashboard from "./pages/admin/Dashboard";
 import ManageProducts from "./pages/admin/ManageProducts";
 import ManageCategories from "./pages/admin/ManageCategories";
 import ManageOrders from "./pages/admin/ManageOrders";
@@ -79,7 +78,6 @@ function App() {
                   </ProtectedRoute>
                 }
               >
-                <Route index element={<AdminDashboard />} />
                 <Route path="products" element={<ManageProducts />} />
                 <Route path="categories" element={<ManageCategories />} />
                 <Route path="orders" element={<ManageOrders />} />
